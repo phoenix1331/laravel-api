@@ -14,3 +14,10 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+$router->group(['prefix' => 'api/v1'], function() {
+
+	Route::resource('jobs', 'JobsController');
+
+});
