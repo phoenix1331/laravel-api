@@ -12,9 +12,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        App\Job::truncate();
+
         Model::unguard();
 
-        // $this->call(UserTableSeeder::class);
+        $this->call(JobsTableSeeder::class);
 
         Model::reguard();
     }
