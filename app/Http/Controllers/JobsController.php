@@ -14,9 +14,19 @@ class JobsController extends ApiController
 
     protected $jobsTransformer;
 
+    /**
+     * [__construct description]
+     * @param JobsTransformer $jobsTransformer [description]
+     */
     function __construct(JobsTransformer $jobsTransformer){
+
         $this->jobsTransformer = $jobsTransformer;
+
+        // $this->beforeFilter('auth.basic');
+        $this->middleware('auth.basic', ['only' => 'store']);
+
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -25,9 +35,11 @@ class JobsController extends ApiController
     public function index()
     {
         $jobs = Job::all();
-        return Response::json([
+        return $this->respond([
+
                 'data' => $this->jobsTransformer->transformCollection($jobs->toArray())
-            ], 200);
+
+            ]);
     }
 
     /**
@@ -62,14 +74,16 @@ class JobsController extends ApiController
         $jobs = Job::find($id);
 
         if(!$jobs){
+
             return $this->respondNotFount('No jobs here dude !');
+
         }
 
-        return Response::json([
+        return $this->respond([
 
                 'data' => $this->jobsTransformer->transform($jobs)
 
-            ], 200);
+            ]);
     }
 
     /**
