@@ -5,11 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Job;
+use \App\Transformers\JobsTransformer;
 use Response;
 use App\Http\Controllers\Controller;
 
 class JobsController extends Controller
 {
+
+    protected $jobsTransformer;
+
+    function __construct(JobsTransformer $jobsTransformer){
+        $this->jobsTransformer = $jobsTransformer;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +26,7 @@ class JobsController extends Controller
     {
         $jobs = Job::all();
         return Response::json([
-                'data' => $this->transformCollection($jobs)
+                'data' => $this->jobsTransformer->transformCollection($jobs->toArray())
             ], 200);
     }
 
@@ -67,7 +74,7 @@ class JobsController extends Controller
 
         return Response::json([
 
-                'data' => $this->transform($jobs)
+                'data' => $this->jobsTransformer->transform($jobs)
 
             ], 200);
     }
@@ -106,29 +113,4 @@ class JobsController extends Controller
         //
     }
 
-    /**
-     * Transforms a collection
-     * @param  [type] $jobs [description]
-     * @return [type]       [description]
-     */
-    private function transformCollection($jobs){
-
-        return array_map([$this, 'transform'], $jobs->toArray());
-
-    }
-
-    /**
-     * Transforms a single 
-     * @param  [type] $job [description]
-     * @return [type]      [description]
-     */
-    private function transform($job){
-
-        return [
-
-            'name' => $job['name'],
-            'description' => $job['description']
-
-        ];
-    }
 }
