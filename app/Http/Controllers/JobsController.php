@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Job;
+use Response;
 use App\Http\Controllers\Controller;
 
 class JobsController extends Controller
@@ -17,7 +18,9 @@ class JobsController extends Controller
     public function index()
     {
         $jobs = Job::all();
-        return response()->json($jobs, $status=200, $headers=[], $options=JSON_PRETTY_PRINT);
+        return Response::json([
+                'data' => $this->transformCollection($jobs)
+            ], 200);
     }
 
     /**
@@ -49,7 +52,24 @@ class JobsController extends Controller
      */
     public function show($id)
     {
-        //
+        $jobs = Job::find($id);
+
+        if(!$jobs){
+            return Response::json([
+
+                'error' => [
+                    'message' => 'Job does not exist',
+                    'code' => 404
+                ]
+
+            ], 404);
+        }
+
+        return Response::json([
+
+                'data' => $this->transform($jobs)
+
+            ], 200);
     }
 
     /**
@@ -84,5 +104,31 @@ class JobsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Transforms a collection
+     * @param  [type] $jobs [description]
+     * @return [type]       [description]
+     */
+    private function transformCollection($jobs){
+
+        return array_map([$this, 'transform'], $jobs->toArray());
+
+    }
+
+    /**
+     * Transforms a single 
+     * @param  [type] $job [description]
+     * @return [type]      [description]
+     */
+    private function transform($job){
+
+        return [
+
+            'name' => $job['name'],
+            'description' => $job['description']
+
+        ];
     }
 }
