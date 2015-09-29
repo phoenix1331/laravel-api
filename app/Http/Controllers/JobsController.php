@@ -9,7 +9,7 @@ use \App\Transformers\JobsTransformer;
 use Response;
 use App\Http\Controllers\Controller;
 
-class JobsController extends Controller
+class JobsController extends ApiController
 {
 
     protected $jobsTransformer;
@@ -48,7 +48,7 @@ class JobsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd('store');
     }
 
     /**
@@ -62,14 +62,7 @@ class JobsController extends Controller
         $jobs = Job::find($id);
 
         if(!$jobs){
-            return Response::json([
-
-                'error' => [
-                    'message' => 'Job does not exist',
-                    'code' => 404
-                ]
-
-            ], 404);
+            return $this->respondNotFount('No jobs here dude !');
         }
 
         return Response::json([
