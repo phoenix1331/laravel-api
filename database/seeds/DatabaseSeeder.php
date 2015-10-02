@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
         $this->cleanDatabase();
         Model::unguard();
 
@@ -29,12 +30,12 @@ class DatabaseSeeder extends Seeder
 
         Model::reguard();
 
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 
 
     private function cleanDatabase(){
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
         foreach($this->tables as $tableName){
 
@@ -42,7 +43,6 @@ class DatabaseSeeder extends Seeder
             
         }
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
     }
 }

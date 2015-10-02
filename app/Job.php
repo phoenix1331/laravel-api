@@ -13,4 +13,10 @@ class Job extends Model{
      */
     protected $fillable = ['name', 'description'];
 
+    public function skills(){
+
+    	return $this->belongsToMany(Skill::class);
+    	
+    }
+
 }

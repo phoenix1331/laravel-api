@@ -18,6 +18,8 @@ Route::get('/', function () {
 
 $router->group(['prefix' => 'api/v1'], function() {
 
+	Route::get('jobs/{id}/skills', 'SkillsController@index');
 	Route::resource('jobs', 'JobsController');
+	Route::resource('skills', 'SkillsController');
 
 });

@@ -4,26 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
+use App\Skill;
 use App\Job;
-use \App\Transformers\JobsTransformer;
+use \App\Transformers\SkillsTransformer;
 use Response;
 use App\Http\Controllers\Controller;
 
-class JobsController extends ApiController
+class SkillsController extends ApiController
 {
-
-    protected $jobsTransformer;
+    protected $skillsTransformer;
 
     /**
      * [__construct description]
-     * @param JobsTransformer $jobsTransformer [description]
+     * @param SkillsTransformer $skillsTransformer [description]
      */
-    function __construct(JobsTransformer $jobsTransformer){
+    function __construct(SkillsTransformer $skillsTransformer){
 
-        $this->jobsTransformer = $jobsTransformer;
+        $this->skillsTransformer = $skillsTransformer;
 
         // $this->beforeFilter('auth.basic');
-        // $this->middleware('auth.basic', ['only' => 'show']);
+        $this->middleware('auth.basic', ['only' => 'store']);
 
     }
 
@@ -32,14 +32,14 @@ class JobsController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($jobId = null)
     {
-        $jobs = Job::all();
+        $skills = $this->getSkills($jobId);
         return $this->respond([
 
-                'data' => $this->jobsTransformer->transformCollection($jobs->toArray())
+            'data' => $this->skillsTransformer->transformCollection($skills->toArray())
 
-            ]);
+        ]);
     }
 
     /**
@@ -60,7 +60,7 @@ class JobsController extends ApiController
      */
     public function store(Request $request)
     {
-        dd('store');
+        //
     }
 
     /**
@@ -71,19 +71,20 @@ class JobsController extends ApiController
      */
     public function show($id)
     {
-        $jobs = Job::find($id);
+      $skills = Skill::find($id);
 
-        if(!$jobs){
+      if(!$skills){
 
-            return $this->respondNotFount('No jobs here dude !');
+          return $this->respondNotFount('No skills here dude !');
 
-        }
+      }
 
-        return $this->respond([
+      return $this->respond([
 
-                'data' => $this->jobsTransformer->transform($jobs)
+          'data' => $this->skillsTransformer->transform($skills)
 
-            ]);
+      ]);
+
     }
 
     /**
@@ -120,4 +121,9 @@ class JobsController extends ApiController
         //
     }
 
+    public function getSkills($jobId){
+
+        return $jobId ? Job::findOrFail($jobId)->skills : Skill::all();
+
+    }
 }
